@@ -1,0 +1,29 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /config-server
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: default
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/ShravaniJawalkar/ecommerce-configs.git
+          default-label: master
+        native:
+          search-locations: classpath:config-properties/ # This means config server looks for files in 'src/main/resources/config-properties/'
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    env:
+      show-values: always
