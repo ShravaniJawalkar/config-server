@@ -4,7 +4,7 @@ pipeline {
     stages {
        stage('Checkout Code') {
             steps {
-                git branch: 'master', url: 'https://github.aj/ShravaniJawalkar/config-server.git'
+                git branch: 'master', url: 'https://github.com/ShravaniJawalkar/config-server.git'
             }
         }
 
