@@ -16,9 +16,21 @@ pipeline {
 
         stage('Debug SSH Agent Environment') {
             steps {
-                sshagent(credentials: ['ec2-ssh-key']) {
-                    sh 'echo "SSH Agent Debugging:"'
-                    sh 'env | grep SSH_AGENT'
+                script {
+                                    try {
+                                        sshagent(credentials: ['ec2-ssh-key']) {
+                                            sh '''
+                                                echo "Debugging SSH Agent Environment..."
+                                                echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
+                                                echo "SSH_AGENT_PID=$SSH_AGENT_PID"
+                                                ls -l $SSH_AUTH_SOCK
+                                                env | grep SSH || true
+                                            '''
+                                        }
+                                    } catch (Exception e) {
+                                        echo "SSH Agent initialization failed: ${e.message}"
+                                        error("Please check your SSH credentials or SSH Agent setup!")
+                                    }
                 }
             }
         }
