@@ -39,18 +39,18 @@ pipeline {
                    }
                }
 
-        stage('Run App') {
-            steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'PRIVATE_KEY_PATH')]) {
-                    bat '''
-                    ssh -o StrictHostKeyChecking=no ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com <<EOF
-                    pkill -f config-server-0.0.1-SNAPSHOT.jar || true
-                    java -jar /home/ec2-user/app/config-server-0.0.1-SNAPSHOT.jar &
-                    EOF
-                    '''
-                }
-            }
-        }
+       stage('Run App') {
+                   steps {
+                       withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'PRIVATE_KEY_PATH')]) {
+                           bat '''
+                           ssh -T -o StrictHostKeyChecking=no ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com ^
+                           pkill -f config-server-0.0.1-SNAPSHOT.jar || true
+                           ssh -T -o StrictHostKeyChecking=no ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com ^
+                           java -jar /home/ec2-user/app/config-server-0.0.1-SNAPSHOT.jar &
+                           '''
+                       }
+                   }
+       }
 
     }
 }
