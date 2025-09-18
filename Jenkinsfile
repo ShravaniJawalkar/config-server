@@ -2,19 +2,19 @@ pipeline {
     agent any
 
     stages {
-      stage('Test SSH Agent Plugin') {
-                     steps {
-                         sshagent(credentials: ['ec2-ssh-key']) {
-                             sh 'echo "SSH Agent is active and credentials are loaded."'
-                         }
-                     }
-      }
-
-        stage('Checkout Code') {
+       stage('Checkout Code') {
             steps {
                 git branch: 'master', url: 'https://github.com/ShravaniJawalkar/config-server.git'
             }
         }
+
+         stage('Test SSH Agent Plugin') {
+                             steps {
+                                 sshagent(credentials: ['ec2-ssh-key']) {
+                                     sh 'echo "SSH Agent is active and credentials are loaded."'
+                                 }
+                             }
+              }
 
     stage('Build') {
             steps {
