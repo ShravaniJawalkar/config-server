@@ -20,15 +20,15 @@ pipeline {
                                     try {
                                         sshagent(credentials: ['ec2-ssh-key']) {
                                             sh '''
-                                                echo "Debugging SSH Agent Environment..."
-                                                echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
-                                                echo "SSH_AGENT_PID=$SSH_AGENT_PID"
-                                                ls -l $SSH_AUTH_SOCK
-                                                env | grep SSH || true
+                                                 echo "Debugging SSH Agent Environment..."
+                                                 echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
+                                                 echo "SSH_AGENT_PID=$SSH_AGENT_PID"
+                                                 ls -l $SSH_AUTH_SOCK || echo "Socket file missing!"
+                                                 env | grep SSH || echo "No SSH-related variables found"
                                             '''
                                         }
                                     } catch (Exception e) {
-                                        echo "SSH Agent initialization failed: ${e.message}"
+                                        echo "SSH Agent initialization failed: ${e}"
                                         error("Please check your SSH credentials or SSH Agent setup!")
                                     }
                 }
