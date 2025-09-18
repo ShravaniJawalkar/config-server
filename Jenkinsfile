@@ -15,50 +15,42 @@ pipeline {
         }
 
         stage('Debug SSH Agent Environment') {
+                    steps {
+                        script {
+                            withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'PRIVATE_KEY_PATH')]) {
+                                bat '''
+                                     echo "Private key available at: %PRIVATE_KEY_PATH%"
+                                     rem Now you can use this key with your SSH client
+                                     ssh -i "%PRIVATE_KEY_PATH%" ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com
+                                '''
+                            }
+                        }
+                    }
+                }
+
+               stage('Deploy') {
+                   steps {
+                       withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'PRIVATE_KEY_PATH')]) {
+                           bat '''
+                               scp -i "%PRIVATE_KEY_PATH%" -o StrictHostKeyChecking=no target/config-server-0.0.1-SNAPSHOT.jar ^
+                               ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com:/home/ec2-user/app/
+                           '''
+                       }
+                   }
+               }
+
+        stage('Run App') {
             steps {
-                script {
-                                    try {
-                                        sshagent(credentials: ['ec2-ssh-key']) {
-                                            bat '''
-                                                 echo "Debugging SSH Agent Environment..."
-                                                 echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
-                                                 echo "SSH_AGENT_PID=$SSH_AGENT_PID"
-                                                 ls -l $SSH_AUTH_SOCK || echo "Socket file missing!"
-                                                 env | grep SSH || echo "No SSH-related variables found"
-                                            '''
-                                        }
-                                    } catch (Exception e) {
-                                        echo "SSH Agent initialization failed: ${e}"
-                                        error("Please check your SSH credentials or SSH Agent setup!")
-                                    }
+                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'PRIVATE_KEY_PATH')]) {
+                    bat '''
+                    ssh -o StrictHostKeyChecking=no ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com <<EOF
+                    pkill -f config-server-0.0.1-SNAPSHOT.jar || true
+                    java -jar /home/ec2-user/app/config-server-0.0.1-SNAPSHOT.jar &
+                    EOF
+                    '''
                 }
             }
         }
-
-//         stage('Deploy') {
-//             steps {
-//                 // Placeholder for deployment logic (e.g., Docker or copying artifacts)
-//                sshagent(credentials: ['ec2-ssh-key']) {
-//                    sh '''
-//                        scp -o StrictHostKeyChecking=no target/config-server-0.0.1-SNAPSHOT.jar \
-//                        ec2-user@ec2-65-2-9-178.ap-south-1.compute.amazonaws.com:/home/ec2-user/app/
-//                    '''
-//                }
-//             }
-//         }
-//
-//         stage('Run App') {
-//             steps {
-//                 sshagent(credentials: ['ec2-ssh-key']) {
-//                     sh '''
-//                     ssh -o StrictHostKeyChecking=no ec2-65-2-9-178.ap-south-1.compute.amazonaws.com <<EOF
-//                     pkill -f config-server-0.0.1-SNAPSHOT.jar || true
-//                     java -jar /home/ec2-user/app/config-server-0.0.1-SNAPSHOT.jar &
-//                     EOF
-//                     '''
-//                 }
-//             }
-//         }
 
     }
 }
