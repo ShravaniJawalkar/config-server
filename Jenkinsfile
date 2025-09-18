@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                                     try {
-                                        ssh-agent(credentials: ['ec2-ssh-key']) {
+                                        sshagent(credentials: ['ec2-ssh-key']) {
                                             sh '''
                                                  echo "Debugging SSH Agent Environment..."
 //                                                  echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
