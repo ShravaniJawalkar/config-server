@@ -14,19 +14,19 @@ pipeline {
             }
         }
 
-        stage('Debug SSH Agent Environment') {
-                    steps {
-                        script {
-                            withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'PRIVATE_KEY_PATH')]) {
-                                bat '''
-                                     echo "Private key available at: %PRIVATE_KEY_PATH%"
-                                     rem Now you can use this key with your SSH client
-                                     ssh -i "%PRIVATE_KEY_PATH%" ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com
-                                '''
-                            }
-                        }
-                    }
-                }
+//         stage('Debug SSH Agent Environment') {
+//                     steps {
+//                         script {
+//                             withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'PRIVATE_KEY_PATH')]) {
+//                                 bat '''
+//                                      echo "Private key available at: %PRIVATE_KEY_PATH%"
+//                                      rem Now you can use this key with your SSH client
+//                                      ssh -i "%PRIVATE_KEY_PATH%" ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com
+//                                 '''
+//                             }
+//                         }
+//                     }
+//                 }
 
                stage('Deploy') {
                    steps {
