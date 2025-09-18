@@ -7,15 +7,13 @@ pipeline {
                 git branch: 'master', url: 'https://github.com/ShravaniJawalkar/config-server.git'
             }
         }
-
-         stage('Test SSH Agent Plugin') {
-                             steps {
-                                 sshagent(credentials: ['ec2-ssh-key']) {
-                                     sh 'echo "SSH Agent is active and credentials are loaded."'
-                                 }
-                             }
-              }
-
+stage('Test Direct SSH Connection') {
+    steps {
+        sh '''
+            ssh -o StrictHostKeyChecking=no -i /mnt/c/Users/Shravani_Jawalkar/Downloads/config-server1.pem ec2-user@ec2-43-205-212-42.ap-south-1.compute.amazonaws.com echo "Connection successful"
+        '''
+    }
+}
     stage('Build') {
             steps {
                 bat 'mvnw.cmd clean package'
