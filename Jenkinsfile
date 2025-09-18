@@ -25,6 +25,7 @@ pipeline {
                        ec2-user@ec2-65-2-9-178.ap-south-1.compute.amazonaws.com:/home/ec2-user/app/
                    '''
                }
+            }
         }
 
         stage('Run App') {
