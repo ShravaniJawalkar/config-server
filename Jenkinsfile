@@ -7,42 +7,33 @@ pipeline {
                 git branch: 'master', url: 'https://github.com/ShravaniJawalkar/config-server.git'
             }
         }
-stage('Test Direct SSH Connection') {
-    steps {
-        powershell '''
-        cd  C:\\Windows\\system32
-        wsl
-        ssh -o StrictHostKeyChecking=no -i /mnt/c/Users/Shravani_Jawalkar/Downloads/config-server1.pem ec2-user@ec2-43-205-212-42.ap-south-1.compute.amazonaws.com
-        echo "Connection successful"
-        '''
-    }
-}
+
     stage('Build') {
             steps {
                 bat 'mvnw.cmd clean package'
             }
         }
 
-//         stage('Debug SSH Agent Environment') {
-//             steps {
-//                 script {
-//                                     try {
-//                                         sshagent(credentials: ['ec2-ssh-key']) {
-// //                                             sh '''
-// //                                                  echo "Debugging SSH Agent Environment..."
-// //                                                  echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
-// //                                                  echo "SSH_AGENT_PID=$SSH_AGENT_PID"
-// //                                                  ls -l $SSH_AUTH_SOCK || echo "Socket file missing!"
-// //                                                  env | grep SSH || echo "No SSH-related variables found"
-// //                                             '''
-// //                                         }
-//                                     } catch (Exception e) {
-//                                         echo "SSH Agent initialization failed: ${e}"
-//                                         error("Please check your SSH credentials or SSH Agent setup!")
-//                                     }
-//                 }
-//             }
-//         }
+        stage('Debug SSH Agent Environment') {
+            steps {
+                script {
+                                    try {
+                                        sshagent(credentials: ['ec2-ssh-key']) {
+                                            sh '''
+                                                 echo "Debugging SSH Agent Environment..."
+//                                                  echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
+//                                                  echo "SSH_AGENT_PID=$SSH_AGENT_PID"
+//                                                  ls -l $SSH_AUTH_SOCK || echo "Socket file missing!"
+//                                                  env | grep SSH || echo "No SSH-related variables found"
+                                            '''
+                                        }
+                                    } catch (Exception e) {
+                                        echo "SSH Agent initialization failed: ${e}"
+                                        error("Please check your SSH credentials or SSH Agent setup!")
+                                    }
+                }
+            }
+        }
 
 //         stage('Deploy') {
 //             steps {
