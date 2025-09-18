@@ -19,14 +19,12 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Placeholder for deployment logic (e.g., Docker or copying artifacts)
-                sshagent(credentials: ['ec2-ssh-key']) {
-                            sh '''
-                            scp -o StrictHostKeyChecking=no -i ~/.ssh/config-server.pem \
-                                target/config-server-0.0.1-SNAPSHOT.jar ec2-65-2-9-178.ap-south-1.compute.amazonaws.com:/home/ec2-user/app/
-                            '''
-                        }
-                echo 'Deploy Stage - Deployment can be added here!'
-            }
+               sshagent(credentials: ['ec2-ssh-key']) {
+                   sh '''
+                       scp -o StrictHostKeyChecking=no target/config-server-0.0.1-SNAPSHOT.jar \
+                       ec2-user@ec2-65-2-9-178.ap-south-1.compute.amazonaws.com:/home/ec2-user/app/
+                   '''
+               }
         }
 
         stage('Run App') {
