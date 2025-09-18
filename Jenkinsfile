@@ -10,6 +10,7 @@ pipeline {
 stage('Test Direct SSH Connection') {
     steps {
         powershell '''
+        cd  C:\\Windows\\system32
         wsl
         ssh -o StrictHostKeyChecking=no -i /mnt/c/Users/Shravani_Jawalkar/Downloads/config-server1.pem ec2-user@ec2-43-205-212-42.ap-south-1.compute.amazonaws.com
         echo "Connection successful"
