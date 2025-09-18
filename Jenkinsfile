@@ -14,7 +14,14 @@ pipeline {
             }
         }
 
-
+        stage('Debug SSH Agent Environment') {
+            steps {
+                sshagent(credentials: ['ec2-ssh-key']) {
+                    sh 'echo "SSH Agent Debugging:"'
+                    sh 'env | grep SSH_AGENT'
+                }
+            }
+        }
 
         stage('Deploy') {
             steps {
