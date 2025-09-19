@@ -13,8 +13,11 @@ pipeline {
 
         stage('Build') {
             steps {
+            //grant permission
+                   sh 'chmod +x mvnw'
                 // Use a shell command to execute the Maven wrapper for building the project.
                 // 'sh' is used for Linux environments.
+
                 sh './mvnw clean package'
             }
         }
