@@ -1,0 +1,43 @@
+// A Jenkinsfile for deploying a Spring Boot application to an EC2 instance
+pipeline {
+    // Agent is where the pipeline will run. 'any' means Jenkins can run it on any available agent.
+    agent any
+
+    stages {
+       stage('Checkout Code') {
+            steps {
+                // Checkout the code from the specified Git repository and branch
+                git branch: 'master', url: 'https://github.com/ShravaniJawalkar/config-server.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Use a shell command to execute the Maven wrapper for building the project.
+                // 'sh' is used for Linux environments.
+                sh './mvnw clean package'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Use the sshagent step to manage the SSH key securely in memory.
+                // The credential ID 'ec2-ssh-key' should be configured in Jenkins.
+                sshagent(credentials: ['ec2-ssh-key']) {
+                    // Use a single shell script block to perform all deployment actions.
+                    sh '''
+                        # Stop the existing application instance gracefully.
+                        # '|| true' ensures the command doesn't fail the build if the process isn't running.
+                        ssh -o StrictHostKeyChecking=no ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com "pkill -f config-server-0.0.1-SNAPSHOT.jar || true"
+
+                        # Copy the new JAR file to the EC2 instance.
+                        # The sshagent provides the necessary key.
+                        scp -o StrictHostKeyChecking=no target/config-server-0.0.1-SNAPSHOT.jar \\
+                        ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com:/home/ec2-user/app/
+
+                         '''
+                }
+            }
+        }
+    }
+}
