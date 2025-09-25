@@ -1,5 +1,6 @@
 // A Jenkinsfile for deploying a Spring Boot application to an EC2 instance
 pipeline {
+    agent any
      stages {
        stage('fetch crumb'){
             steps{
