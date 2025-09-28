@@ -23,15 +23,15 @@ pipeline {
                         icacls "%PRIVATE_KEY_PATH%" /inheritance:r /grant:r "SYSTEM:F"
 
                         rem Ensure the remote directory has the correct permissions
-                        ssh -i "%PRIVATE_KEY_PATH%" -T -o StrictHostKeyChecking=no ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com "sudo chown -R ec2-user:ec2-user /home/ec2-user/app"
+                        ssh -i "%PRIVATE_KEY_PATH%" -T -o StrictHostKeyChecking=no ec2-user@ec2-35-154-38-224.ap-south-1.compute.amazonaws.com "sudo chown -R ec2-user:ec2-user /home/ec2-user/app"
 
                         rem Use scp to copy the file
-                        scp -i "%PRIVATE_KEY_PATH%" -o StrictHostKeyChecking=no target/config-server-0.0.1-SNAPSHOT.jar ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com:/home/ec2-user/app/
+                        scp -i "%PRIVATE_KEY_PATH%" -o StrictHostKeyChecking=no target/config-server-0.0.1-SNAPSHOT.jar ec2-user@ec2-35-154-38-224.ap-south-1.compute.amazonaws.com:/home/ec2-user/app/
 
                         rem Use ssh to run the commands
-                        ssh -i "%PRIVATE_KEY_PATH%" -T -o StrictHostKeyChecking=no ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com "pkill -f config-server-0.0.1-SNAPSHOT.jar || true"
+                        ssh -i "%PRIVATE_KEY_PATH%" -T -o StrictHostKeyChecking=no ec2-user@ec2-35-154-38-224.ap-south-1.compute.amazonaws.com "pkill -f config-server-0.0.1-SNAPSHOT.jar || true"
 
-                        ssh -i "%PRIVATE_KEY_PATH%" -T -o StrictHostKeyChecking=no ec2-user@ec2-43-205-203-27.ap-south-1.compute.amazonaws.com "java -jar /home/ec2-user/app/config-server-0.0.1-SNAPSHOT.jar &"
+                        ssh -i "%PRIVATE_KEY_PATH%" -T -o StrictHostKeyChecking=no ec2-user@ec2-35-154-38-224.ap-south-1.compute.amazonaws.com "java -jar /home/ec2-user/app/config-server-0.0.1-SNAPSHOT.jar &"
                         '''
                     }
                 }
