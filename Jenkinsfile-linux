@@ -2,23 +2,6 @@
 pipeline {
     agent any
      stages {
-       stage('fetch crumb'){
-            steps{
-                script{
-                     // Use a 'sh' step to execute shell commands.
-                                        // The output is captured and stored in Groovy variables.
-                                        env.CRUMB_INFO = sh(returnStdout: true, script: "curl -s -u \"admin:11e86c0a13a69309480a75750dff61311c\" \"http://13.233.29.47:8080/crumbIssuer/api/json\"")
-
-                                        // Use Groovy's JsonSlurper to parse the JSON response.
-                                        def jsonSlurper = new groovy.json.JsonSlurper()
-                                        def object = jsonSlurper.parseText(env.CRUMB_INFO)
-
-                                        // Store the crumb and header field in environment variables for later use.
-                                        env.CRUMB = object.crumb
-                                        env.HEADER_FIELD = object.crumbRequestField
-                }
-            }
-       }
        stage('Checkout Code') {
             steps {
                 // Checkout the code from the specified Git repository and branch
