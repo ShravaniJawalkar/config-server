@@ -27,6 +27,7 @@ pipeline {
 
                         rem Use scp to copy the file
                         scp -i "%PRIVATE_KEY_PATH%" -o StrictHostKeyChecking=no target/config-server-0.0.1-SNAPSHOT.jar ec2-user@ec2-35-154-38-224.ap-south-1.compute.amazonaws.com:/home/ec2-user/app/
+                        '''
                     }
                 }
             }
